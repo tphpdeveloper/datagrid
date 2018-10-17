@@ -1,6 +1,7 @@
 {
     "name": "tphpdeveloper/datagrid",
     "description": "Package for build Grid View",
+    "homepage": "https://github.com/tphpdeveloper/datagrid",
     "keywords": [
         "laravel",
         "datagrid",
@@ -11,7 +12,7 @@
         {
             "name": "Igor Kutsan",
             "email": "igorkutsan@ukr.net",
-            "homepage": "https://github.com/tphpdeveloper/datagrid",
+            "homepage": "https://mykutsan.info",
             "role": "Developer"
         }
     ],
@@ -21,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Tphpdeveloper\\Datagrid\\": "src"
+            "Tphpdeveloper\\Gridview\\": "src"
         }
     }
 }
