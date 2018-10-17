@@ -24,5 +24,15 @@
         "psr-4": {
             "Tphpdeveloper\\Gridview\\": "src"
         }
-    }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Tphpdeveloper\\Gridview\\DatagridServiceProvider"
+            ],
+            "aliases": {
+                "Datagrid": "Tphpdeveloper\\Gridview\\DatagridFacade"
+            }
+        }
+    },
 }

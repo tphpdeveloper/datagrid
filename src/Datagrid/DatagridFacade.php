@@ -9,7 +9,7 @@ namespace Tphpdeveloper\Gridview\Datagrid;
 
 use Illuminate\Support\Facades\Facade;
 
-class Datagrid extends Facade
+class DatagridFacade extends Facade
 {
 
     protected static function getFacadeAccessor(){

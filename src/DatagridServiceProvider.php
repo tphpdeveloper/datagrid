@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\ServiceProvider;
 
 use Tphpdeveloper\Gridview\Datagrid\BuilderDataGrid;
-use Tphpdeveloper\Gridview\Datagrid\Datagrid;
 use View;
 use File;
 
@@ -33,10 +32,11 @@ class DatagridServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Datagrid::class, function($app){
+        $this->app->singleton('datagrid', function($app){
             return new BuilderDataGrid();
         });
 
+//        $this->app->alias('datagrid', BuilderDataGrid::class);
     }
 
     /**
@@ -45,7 +45,7 @@ class DatagridServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        dump(app());
     }
 
     /**
@@ -54,7 +54,7 @@ class DatagridServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [Datagrid::class];
+        return [BuilderDataGrid::class];
     }
 
 }
