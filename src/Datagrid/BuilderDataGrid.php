@@ -124,6 +124,6 @@ class BuilderDataGrid
     }
 
     public function render(){
-        return view('resources.view.grid')->with('builder', $this);
+        return view('datagrid::resources.view.grid')->with('builder', $this);
     }
 }

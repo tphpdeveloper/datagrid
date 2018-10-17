@@ -36,7 +36,7 @@ class DatagridServiceProvider extends ServiceProvider
             return new BuilderDataGrid();
         });
 
-//        $this->app->alias('datagrid', BuilderDataGrid::class);
+        App::alias('datagrid', BuilderDataGrid::class);
     }
 
     /**
@@ -54,7 +54,7 @@ class DatagridServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [BuilderDataGrid::class];
+        return ['datagrid', BuilderDataGrid::class];
     }
 
 }
