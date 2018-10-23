@@ -3,7 +3,7 @@
         <thead class="text-primary">
 
             {{--{{ dd()}}--}}
-            <tr>
+			<tr>
                 @foreach($columns as $co => $column)
                     @continue(($co + 1) == count($columns) && $column->getName() === \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
                     <th>
@@ -20,6 +20,7 @@
             </tr>
             @include('datagrid.filter.filter')
         </thead>
+		
         <tbody>
             @if($models)
                 @php
@@ -34,8 +35,8 @@
                 @endphp
                 @foreach($models as $co => $model)
                     <tr>
-                        @foreach($columns as $co_column => $column)
-                            <td {!! $column->getStringAttributes() !!} >
+                        @foreach($columns as $co_column => $column)							
+                            <td {!! $column->getStringAttributes() !!}>
                                 @if($column->getName() === \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_COUNTER)
                                     {{ (!$page ? $co + 1 : ( $co + 1 + ( ( $page * $count_on_first_page ) - $count_on_first_page ) ) ) }}
                                 @elseif($column->getName() === \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
@@ -43,7 +44,7 @@
                                 @else
                                     {!! $model->{$column->getName()} !!}
                                 @endif
-                            </td>
+                            </td>							
                         @endforeach
                         @if(($co_column + 1) == count($columns) && $column->getName() !== \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
                             <td></td>
@@ -54,6 +55,7 @@
 
         </tbody>
     </table>
+				
     @if($models instanceof \Illuminate\Pagination\LengthAwarePaginator)
         {!! $models->links('vendor.pagination.bootstrap-4') !!}
     @endif
