@@ -8,13 +8,14 @@
 
 namespace Tphpdeveloper\Gridview;
 
-use App;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\ServiceProvider;
 
 use Tphpdeveloper\Gridview\Datagrid\BuilderDataGrid;
 use View;
 use File;
+use Form;
+
 
 
 class DatagridServiceProvider extends ServiceProvider
@@ -33,7 +34,7 @@ class DatagridServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('datagrid', function($app){
-            return new BuilderDataGrid();
+            return new BuilderDataGrid($app['request']);
         });
 
     }
@@ -44,7 +45,7 @@ class DatagridServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //dump(app());
+        $this->publishesFile();
     }
 
     /**
@@ -56,4 +57,18 @@ class DatagridServiceProvider extends ServiceProvider
         return [BuilderDataGrid::class];
     }
 
+    /**
+     * Publish file
+     */
+    protected function publishesFile()
+    {
+        $this->publishes([
+            __DIR__.'/config/datagrid.php' => config_path('datagrid.php')
+        ], 'datagrid_config');
+
+        $this->publishes([
+            __DIR__.'/resources/views' => resource_path('views')
+        ], 'datagrid_view');
+
+    }
 }

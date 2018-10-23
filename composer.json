@@ -18,7 +18,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.1.0",
+        "laravelcollective/html":"*"
     },
     "autoload": {
         "psr-4": {
@@ -28,10 +29,13 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Tphpdeveloper\\Gridview\\DatagridServiceProvider"
+                "Tphpdeveloper\\Gridview\\DatagridServiceProvider",
+                "Collective\\Html\\HtmlServiceProvider"
             ],
             "aliases": {
-                "Datagrid": "Tphpdeveloper\\Gridview\\Datagrid\\DatagridFacade"
+                "Datagrid": "Tphpdeveloper\\Gridview\\Datagrid\\DatagridFacade",
+                "Form": "Collective\\Html\\FormFacade",
+                "Html": "Collective\\Html\\HtmlFacade"
             }
         }
     }

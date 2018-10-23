@@ -7,21 +7,16 @@
 
 namespace Tphpdeveloper\Gridview\Datagrid;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Tphpdeveloper\Gridview\Datagrid\Column;
 use Tphpdeveloper\Gridview\Datagrid\Row;
 
 class BuilderDataGrid
 {
 
-    /**
-     * Table attributes
-     * @var array
-     */
-    private $attributes = [];
 
     /**
-     * Eloquent collection
+     * Eloquent collection Illuminate\Database\Eloquent\Builder
      * @var null
      */
     private $models = null;
@@ -33,15 +28,29 @@ class BuilderDataGrid
     private $row = null;
 
     /**
+     * @var Request|null
+     */
+    private $request = null;
+
+    /**
+     * BuilderDataGrid constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+
+    /**
      *
-     * @param Model $models
+     * @param Builder|LengthAwarePaginator $models
      * @param array $attributes
      * @return $this
      */
-    public function setData(Model $models, array $attributes = [])
+    public function setData($models)
     {
-        $this->models = $models->paginate(10);
-        $this->attributes = $attributes;
+        $this->models = $models;
         $this->row = new Row();
 
         return $this;
@@ -57,57 +66,29 @@ class BuilderDataGrid
     public function setColumn($name, $attributes = [], $collback = null)
     {
         $column = new Column($name);
-        if(in_array('label', $attributes)){
+
+        if(key_exists('label', $attributes)){
             $column->setAlias($attributes['label']);
         }
-        if(in_array('sort', $attributes)){
+        if(key_exists('sort', $attributes)){
             $column->setSort($attributes['sort']);
         }
-        if(in_array('filter', $attributes)){
+        if(key_exists('filter', $attributes)){
             $column->setFilter($attributes['filter']);
         }
-        if(in_array('attributes', $attributes)){
+        if(key_exists('attributes', $attributes)){
             $column->setAttributes($attributes['attributes']);
         }
-        if(!is_null($collback)){
+        if(is_callable($collback)){
             $column->setCollback($collback);
         }
 
         $this->row->setColumn($column);
-        if(in_array('tr', $attributes)){
-            $this->row->setAttributes($attributes['tr']);
-        }
 
         return $this;
     }
 
-    /**
-     * Return array table attributes
-     * @return array
-     */
-    public function getAttributes(): array
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * Returned string table attributes
-     * @return string
-     */
-    public function getStringAttributes(): string
-    {
-        $string = '';
-        $attributes = [];
-        if(count($this->attributes)){
-            foreach($this->attributes as $key => $value) {
-                $attributes[] = $key . '="' . $value . '"';
-            }
-            return implode(' ', $attributes);
-        }
-        return $string;
-    }
-
-    /**
+   /**
      * Array object Tphpdeveloper\Gridview\Datagrid\Row
      * @return mixed
      */
@@ -115,7 +96,7 @@ class BuilderDataGrid
         return $this->row;
     }
 
-    /**
+   /**
      * @return object
      */
     public function getModel(): object
@@ -124,6 +105,10 @@ class BuilderDataGrid
     }
 
     public function render(){
-        return view('datagrid::resources.view.grid')->with('builder', $this);
+        return view('datagrid.grid')
+            ->with('builder', $this)
+            ->with('columns', $this->row->getColumns())
+            ->with('request', $this->request)
+            ->with('models', $this->models);
     }
 }

@@ -9,6 +9,9 @@ namespace Tphpdeveloper\Gridview\Datagrid;
 
 class Column
 {
+    const COLUMN_COUNTER = 'counter';
+
+    const COLUMN_CALLBACK = 'collback';
 
     /**
      * Name column
@@ -42,7 +45,7 @@ class Column
 
     /**
      * Anonimous function
-     * @var string
+     * @var function
      */
     private $collback = null;
 
@@ -54,9 +57,17 @@ class Column
      * @param bool $filter
      * @param array $attributes
      */
-    public function __construct(string $name, string $alias = '', bool $sort = false, bool $filter = false, array $attributes = [], string $collback = '')
+    public function __construct(string $name, string $alias = '', bool $sort = false, bool $filter = false, array $attributes = [], $collback = null)
     {
-        $this->name = $name;
+        if($name == '' && !is_callable($collback) ){
+            $this->name = self::COLUMN_COUNTER;
+        }
+        elseif($name == '' && is_callable($collback) ){
+            $this->name = self::COLUMN_CALLBACK;
+        }
+        else{
+            $this->name = $name;
+        }
         $this->alias = $alias;
         $this->sort = $sort;
         $this->filter = $filter;
@@ -85,7 +96,22 @@ class Column
      */
     public function getAlias(): string
     {
-        return $this->alias;
+        $name = '';
+        if($this->alias != '') {
+            $name = $this->alias;
+        }
+        else{
+            $name = $this->name;
+        }
+        $name = mb_strtoupper($name);
+        $first = mb_substr($name, 0, 1);
+        $last =  mb_strtolower(mb_substr($name, 1));
+
+        if($this->name == self::COLUMN_CALLBACK){
+            return '';
+        }
+
+        return $first.$last;
     }
 
     /**
@@ -99,7 +125,7 @@ class Column
     /**
      * @return bool
      */
-    public function isSort(): bool
+    public function hasSort(): bool
     {
         return $this->sort;
     }
@@ -115,7 +141,7 @@ class Column
     /**
      * @return bool
      */
-    public function isFilter(): bool
+    public function hasFilter(): bool
     {
         return $this->filter;
     }
@@ -137,6 +163,22 @@ class Column
     }
 
     /**
+     * @return array
+     */
+    public function getStringAttributes(): string
+    {
+        $attribute = '';
+        if(count($this->attributes)){
+            foreach($this->attributes as $name => $attribute_value){
+                $attribute .= $name.'="'.$attribute_value.'" ';
+            }
+            return $attribute;
+        }
+
+        return $attribute;
+    }
+
+    /**
      * @param array $attributes
      */
     public function setAttributes(array $attributes): void
@@ -145,10 +187,14 @@ class Column
     }
 
     /**
-     * @return function anonimous
+     * @param param for function $param
+     * @return string
      */
-    public function getCollback(): string
+    public function getCollback($param): string
     {
+        if(is_callable($this->collback)) {
+            return call_user_func($this->collback, $param);
+        }
         return $this->collback;
     }
 
@@ -157,6 +203,10 @@ class Column
      */
     public function setCollback($collback): void
     {
+        $this->name = self::COLUMN_CALLBACK;
+        $this->attributes = [
+            'class' => 'd-flex flex-nowrap justify-content-end'
+        ];
         $this->collback = $collback;
     }
 

@@ -18,11 +18,6 @@ class Row
      */
     private $columns = [];
 
-    /**
-     * Table row attributes
-     * @var array
-     */
-    private $attributes = [];
 
     /**
      * Returns an array of column objects
@@ -53,10 +48,7 @@ class Row
      */
     public function setColumn(Column $column): void
     {
-        if(!isset($this->columns[$column->getName()])) {
-            $this->columns[$column->getName()] = $column;
-        }
-        throw new \Exception('name of column exist!!!');
+        $this->columns[] = $column;
     }
 
     /**
@@ -70,32 +62,36 @@ class Row
     }
 
     /**
-     * Return a row attributes
-     * @return array
+     * Check if need filter for search
+     * @return bool
      */
-    public function getAttributes(): array
-    {
-        return $this->attributes;
+    public function hasFilter(){
+        $exist = false;
+        if(count($this->columns)){
+            foreach($this->columns as $column){
+                if($column->hasFilter()){
+                    $exist = true;
+                }
+            }
+        }
+
+        return $exist;
     }
 
     /**
-     * @param array $attributes
+     * Check if in row need filter functional
+     * @return bool
      */
-    public function setAttributes(array $attributes): void
-    {
-        $this->attributes = $attributes;
-    }
-
-    public function getStringAttributes(): string
-    {
-        $string = '';
-        $attributes = [];
-        if(count($this->attributes)){
-            foreach($this->attributes as $key => $value) {
-                $attributes[] = $key . '="' . $value . '"';
+    public function hasSort(){
+        $exist = false;
+        if(count($this->columns)){
+            foreach($this->columns as $column){
+                if($column->hasSort()){
+                    $exist = true;
+                }
             }
-            return implode(' ', $attributes);
         }
-        return $string;
+
+        return $exist;
     }
 }
