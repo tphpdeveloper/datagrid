@@ -45,6 +45,7 @@ class DatagridServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+		//dd($this->app);
         $this->publishesFile();
     }
 
@@ -52,10 +53,12 @@ class DatagridServiceProvider extends ServiceProvider
      * Get the services provided by the provider.
      * @return array
      */
+	
     public function provides()
     {
-        return [BuilderDataGrid::class];
+        return ['datagrid', 'BuilderDataGrid'];
     }
+	
 
     /**
      * Publish file

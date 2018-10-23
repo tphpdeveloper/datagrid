@@ -172,7 +172,6 @@ class Column
             foreach($this->attributes as $name => $attribute_value){
                 $attribute .= $name.'="'.$attribute_value.'" ';
             }
-            return $attribute;
         }
 
         return $attribute;
