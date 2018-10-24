@@ -24,7 +24,7 @@
                     Html::tag('i', '', ['class' => 'fa fa-search']),
                     [
                     'type' => 'submit',
-                    'class' => 'btn text-success'
+                    'class' => 'btn btn-sm text-success btn-neutral'
                     ]
             ) !!}
             {!! Form::close() !!}
@@ -33,7 +33,7 @@
 
             {!! Html::link(route($request->route()->getName(), $request->except('filter')), Html::tag('i', '', ['class' => 'fa fa-remove']),
                     [
-                    'class' => 'btn text-danger'
+                    'class' => 'btn btn-sm text-danger btn-neutral'
                     ],
                     null,
                     false) !!}
