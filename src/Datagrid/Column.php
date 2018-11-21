@@ -9,9 +9,6 @@ namespace Tphpdeveloper\Gridview\Datagrid;
 
 class Column
 {
-    const COLUMN_COUNTER = 'counter';
-
-    const COLUMN_CALLBACK = 'collback';
 
     /**
      * Name column
@@ -47,7 +44,19 @@ class Column
      * Anonimous function
      * @var function
      */
-    private $collback = null;
+    private $callback = null;
+
+    /**
+     * If has callable function
+     * @var bool
+     */
+    private $callable = false;
+
+    /**
+     * If column mast be counter
+     * @var bool
+     */
+    private $counter = false;
 
     /**
      * Column constructor.
@@ -57,22 +66,8 @@ class Column
      * @param bool $filter
      * @param array $attributes
      */
-    public function __construct(string $name, string $alias = '', bool $sort = false, bool $filter = false, array $attributes = [], $collback = null)
+    public function __construct()
     {
-        if($name == '' && !is_callable($collback) ){
-            $this->name = self::COLUMN_COUNTER;
-        }
-        elseif($name == '' && is_callable($collback) ){
-            $this->name = self::COLUMN_CALLBACK;
-        }
-        else{
-            $this->name = $name;
-        }
-        $this->alias = $alias;
-        $this->sort = $sort;
-        $this->filter = $filter;
-        $this->attributes = $attributes;
-        $this->collback = $collback;
     }
 
     /**
@@ -86,9 +81,10 @@ class Column
     /**
      * @param string $name
      */
-    public function setName(string $name): void
+    public function setName(string $name): object
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -100,26 +96,29 @@ class Column
         if($this->alias != '') {
             $name = $this->alias;
         }
-        else{
+        elseif($this->name != '') {
             $name = $this->name;
         }
-        $name = mb_strtoupper($name);
-        $first = mb_substr($name, 0, 1);
-        $last =  mb_strtolower(mb_substr($name, 1));
-
-        if($this->name == self::COLUMN_CALLBACK){
-            return '';
+        if($name != '') {
+            $name = mb_strtoupper($name);
+            $first = mb_substr($name, 0, 1);
+            $last = mb_strtolower(mb_substr($name, 1));
+            $name = $first . $last;
         }
 
-        return $first.$last;
+        return $name;
     }
 
     /**
      * @param string $alias
      */
-    public function setAlias(string $alias): void
+    public function setAlias(string $alias): object
     {
         $this->alias = $alias;
+        if($alias == '#'){
+            $this->counter = true;
+        }
+        return $this;
     }
 
     /**
@@ -133,9 +132,10 @@ class Column
     /**
      * @param bool $sort
      */
-    public function setSort(bool $sort): void
+    public function setSort(bool $sort): object
     {
         $this->sort = $sort;
+        return $this;
     }
 
     /**
@@ -149,9 +149,10 @@ class Column
     /**
      * @param bool $filter
      */
-    public function setFilter(bool $filter): void
+    public function setFilter(bool $filter): object
     {
         $this->filter = $filter;
+        return $this;
     }
 
     /**
@@ -180,19 +181,20 @@ class Column
     /**
      * @param array $attributes
      */
-    public function setAttributes(array $attributes): void
+    public function setAttributes(array $attributes): object
     {
         $this->attributes = $attributes;
+        return $this;
     }
 
     /**
      * @param param for function $param
      * @return string
      */
-    public function getCollback($param): string
+    public function getCallback($param): string
     {
-        if(is_callable($this->collback)) {
-            return call_user_func($this->collback, $param);
+        if(is_callable($this->callback)) {
+            return call_user_func($this->callback, $param);
         }
         return $this->collback;
     }
@@ -200,16 +202,40 @@ class Column
     /**
      * @param function $collback
      */
-    public function setCollback($collback): void
+    public function setCallback($callback): object
     {
-        $this->name = self::COLUMN_CALLBACK;
-        $this->attributes = [
-            'class' => 'd-flex flex-nowrap justify-content-end'
-        ];
-        $this->collback = $collback;
+        $this->callable = true;
+        $this->callback = $callback;
+        return $this;
     }
 
+    /**
+     * @param bool $collable
+     */
+    public function setCallable(bool $callable = false): object
+    {
+        $this->callable = $callable;
+        return $this;
+    }
 
+    /**
+     * If column has callable, default = false
+     *
+     * @return bool
+     */
+    public function isCallable(): bool
+    {
+        return $this->callable;
+    }
+
+    /**
+     * If column counter, default = false
+     * @return bool
+     */
+    public function isCounter(): bool
+    {
+        return $this->counter;
+    }
 
 
 

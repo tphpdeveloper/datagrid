@@ -9,6 +9,6 @@ return [
     /**
      * Count element on page
      */
-
+    'path' => 'vendor.datagrid'
 
 ];

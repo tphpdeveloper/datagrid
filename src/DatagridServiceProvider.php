@@ -47,18 +47,19 @@ class DatagridServiceProvider extends ServiceProvider
     {
 		//dd($this->app);
         $this->publishesFile();
+        $this->loadViewsFrom(config('datagrid.path'), 'datagrid');
     }
 
     /**
      * Get the services provided by the provider.
      * @return array
      */
-	
+
     public function provides()
     {
         return ['datagrid', 'BuilderDataGrid'];
     }
-	
+
 
     /**
      * Publish file
@@ -70,7 +71,7 @@ class DatagridServiceProvider extends ServiceProvider
         ], 'datagrid_config');
 
         $this->publishes([
-            __DIR__.'/resources/views' => resource_path('views')
+            __DIR__.'/resources/views' => resource_path('views.vendor')
         ], 'datagrid_view');
 
     }

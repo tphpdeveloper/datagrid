@@ -5,22 +5,22 @@
             {{--{{ dd()}}--}}
 			<tr>
                 @foreach($columns as $co => $column)
-                    @continue(($co + 1) == count($columns) && $column->getName() === \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
-                    <th>
-                        @if($column->hasSort() && $column->getName() !== \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
-                            @include('datagrid.sort.sort')
+                    <th {!! $column->getStringAttributes() !!}>
+                        @if($column->hasSort())
+                            @include('datagrid::sort.sort')
+                        @elseif($builder->getRow()->hasSort() && ($co + 1) == count($columns))
+                            {{--button for sort --}}
+                            @include('datagrid::sort.button')
                         @else
                             {{ $column->getAlias() }}
                         @endif
                     </th>
                 @endforeach
-
-                @include('datagrid.sort.button')
-
             </tr>
-            @include('datagrid.filter.filter')
+            {{--row with field and button for a filtering data--}}
+            @include('datagrid::filter.filter')
         </thead>
-		
+
         <tbody>
             @if($models)
                 @php
@@ -35,28 +35,25 @@
                 @endphp
                 @foreach($models as $co => $model)
                     <tr>
-                        @foreach($columns as $co_column => $column)							
+                        @foreach($columns as $co_column => $column)
                             <td {!! $column->getStringAttributes() !!}>
-                                @if($column->getName() === \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_COUNTER)
+                                @if($column->isCounter())
                                     {{ (!$page ? $co + 1 : ( $co + 1 + ( ( $page * $count_on_first_page ) - $count_on_first_page ) ) ) }}
-                                @elseif($column->getName() === \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
-                                    {!! $column->getCollback($model) !!}
+                                @elseif($column->isCallable())
+                                    {!! $column->getCallback($model) !!}
                                 @else
                                     {!! $model->{$column->getName()} !!}
                                 @endif
-                            </td>							
+                            </td>
                         @endforeach
-                        @if(($co_column + 1) == count($columns) && $column->getName() !== \Tphpdeveloper\Gridview\Datagrid\Column::COLUMN_CALLBACK)
-                            <td></td>
-                        @endif
                     </tr>
                 @endforeach
             @endif
 
         </tbody>
     </table>
-				
+
     @if($models instanceof \Illuminate\Pagination\LengthAwarePaginator)
-        {!! $models->links('vendor.pagination.bootstrap-4') !!}
+        {!! $models->appends($request->only('sort','filter'))->links('vendor.pagination.bootstrap-4') !!}
     @endif
 </div>

@@ -59,13 +59,14 @@ class BuilderDataGrid
     /**
      * @param $name
      * @param array $attributes
-     * @param null $collback
+     * @param null $callback
      * @return $this
      * @throws \Exception
      */
-    public function setColumn($name, $attributes = [], $collback = null)
+    public function setColumn($name, $attributes = [], $callback = null)
     {
-        $column = new Column($name);
+        $column = new Column();
+        $column->setName($name);
 
         if(key_exists('label', $attributes)){
             $column->setAlias($attributes['label']);
@@ -79,8 +80,8 @@ class BuilderDataGrid
         if(key_exists('attributes', $attributes)){
             $column->setAttributes($attributes['attributes']);
         }
-        if(is_callable($collback)){
-            $column->setCollback($collback);
+        if(is_callable($callback)){
+            $column->setCallback($callback);
         }
 
         $this->row->setColumn($column);
@@ -105,7 +106,7 @@ class BuilderDataGrid
     }
 
     public function render(){
-        return view('datagrid.grid')
+        return view('datagrid::grid')
             ->with('builder', $this)
             ->with('columns', $this->row->getColumns())
             ->with('request', $this->request)
